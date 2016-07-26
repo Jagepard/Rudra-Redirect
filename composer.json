@@ -1,11 +1,11 @@
 {
-    "name"        : "rudra/container",
+    "name"        : "rudra/redirect",
     "description" : "The Rudra framework",
     "version"     : "1.0.0-dev",
     "type"        : "library",
     "keywords"    : [
         "rudra",
-        "container"
+        "redirect"
     ],
     "license"     : "MIT",
     "authors"     : [
