@@ -38,8 +38,10 @@ Class Redirect
     }
 
     /**
-     * @param bool   $url
+     * @param bool $url
      * @param string $external
+     * @param string $header
+     *
      * Перенаправляет в соответствии с указанными параметрами
      * $external - для перенаправления на внешние адреса,
      * если $external == 1, то http://domain.com
@@ -49,33 +51,36 @@ Class Redirect
      * если значение $url == 'self', то перенаправление будет
      * произведено на текущуй метод контроллера (текущуй адрес)
      */
-    public function run($url = false, $external = 'http')
+    public function run($url = null, $external = null, $header = null)
     {
-        if ($url == 'self') {
+        $this->responseCode($header);
+
+        if ('self' == $url) {
             /*
              * Присваивает $this->request данные
              * $_SERVER['REQUEST_URI'] или $_GET['r']
              * в зависимости от параметра Config::URI
              */
-            switch ($this->config) {
+            switch ($this->getConfig()) {
                 case 'REQUEST':
-                    $this->request = trim($_SERVER['REQUEST_URI'], '/');
+                    $this->setRequest(trim($_SERVER['REQUEST_URI'], '/'));
                     break;
                 case 'GET':
-                    $this->request = trim($_GET['r'], '/');
+                    $this->setRequest(trim($_GET['r'], '/'));
                     break;
             }
+
             /*
              * Присваевает значение $this->request
              * в зависимости от наличия get запроса
              */
-            if (strpos($this->request, '?') !== false) {
-                preg_match('~[/[:word:]-]+(?=\?)~', $this->request, $matches);
+            if (strpos($this->getRequest(), '?') !== false) {
+                preg_match('~[/[:word:]-]+(?=\?)~', $this->getRequest(), $matches);
             } else {
-                $matches[0] = $this->request;
+                $matches[0] = $this->getRequest();
             }
 
-            if ($external == 'secure') {
+            if ('secure' == $external) {
                 $this->run(ltrim($matches[0], '/'), 'https');
             }
 
@@ -83,20 +88,58 @@ Class Redirect
             $this->run(ltrim($matches[0], '/'));
         }
 
-        switch ($external) {
-            case 'basic':
-                header('Location: http://' . $url);
-                break;
-            case 'secure':
-                header('Location: https://' . $url);
-                break;
-            case 'full':
-                header('Location:' . $url);
-                break;
-            default:
-                $url = str_replace('.', '/', $url);
-                header('Location:' . $external . '://' . $_SERVER['SERVER_NAME'] . '/' . $url);
-                exit;
+        if ('basic' == $external) {
+            header('Location: http://' . $url);
+            exit;
+        } elseif ('secure' == $external) {
+            header('Location: https://' . $url);
+            exit;
+        } elseif ('full' == $external) {
+            header('Location:' . $url);
+            exit;
+        } else {
+            $url = str_replace('.', '/', $url);
+            header('Location:' . APP_URL . '/' . $url);
+            exit;
         }
+    }
+
+    public function responseCode($code)
+    {
+        if ('301' == $code) {
+            header("HTTP/1.1 301 Moved Permanently");
+        } elseif ('404' == $code) {
+            header("HTTP/1.1 404 Not Found");
+        } elseif ('403' == $code) {
+            header('HTTP/1.0 403 Forbidden');
+        } elseif ('333' == $code) {
+            header('HTTP/1.1 333 Du du du Fackboy');
+        } elseif ('200' == $code){
+            header('HTTP/1.1 200');
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 }
