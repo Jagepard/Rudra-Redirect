@@ -3,7 +3,7 @@
 /**
  * Date: 19.01.16
  * Time: 15:10
- * 
+ *
  * @author    : Korotkov Danila <dankorot@gmail.com>
  * @copyright Copyright (c) 2016, Korotkov Danila
  * @license   http://www.gnu.org/licenses/gpl.html GNU GPLv3.0
@@ -28,12 +28,12 @@ class Redirect
      * @var
      * Строка запроса, значение разберается из данных url
      */
-    private $request;
+    protected $request;
 
     /**
      * @var
      */
-    private $config;
+    protected $config;
 
     /**
      * Redirect constructor.
@@ -109,41 +109,10 @@ class Redirect
     }
 
     /**
-     * @return mixed
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @param mixed $request
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * @return mixed
-     */
-    private function setRequest()
-    {
-        switch ($this->getConfig()) {
-            case 'REQUEST':
-                $this->request = trim($this->getDi()->getServer('REQUEST_URI'), '/');
-                break;
-            case 'GET':
-                $this->request = trim($this->getDi()->getGet('r'), '/');
-                break;
-        }
-    }
-
-    /**
      * @param $url
      * @param $external
      */
-    private function redirectTo($url, $external)
+    protected function redirectTo($url, $external)
     {
         if ('basic' == $external) {
             header('Location: http://' . $url);
@@ -159,6 +128,37 @@ class Redirect
             header('Location:' . APP_URL . '/' . $url);
             exit;
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function setRequest()
+    {
+        switch ($this->getConfig()) {
+            case 'REQUEST':
+                $this->request = trim($this->getDi()->getServer('REQUEST_URI'), '/');
+                break;
+            case 'GET':
+                $this->request = trim($this->getDi()->getGet('r'), '/');
+                break;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 
     /**
