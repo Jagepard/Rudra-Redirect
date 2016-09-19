@@ -1,22 +1,29 @@
 <?php
 
+/**
+ * Date: 19.01.16
+ * Time: 15:10
+ * 
+ * @author    : Korotkov Danila <dankorot@gmail.com>
+ * @copyright Copyright (c) 2016, Korotkov Danila
+ * @license   http://www.gnu.org/licenses/gpl.html GNU GPLv3.0
+ */
+
 namespace Rudra;
 
-    /**
-     * Date: 19.01.16
-     * Time: 15:10
-     * @author    : Korotkov Danila <dankorot@gmail.com>
-     * @copyright Copyright (c) 2016, Korotkov Danila
-     * @license   http://www.gnu.org/licenses/gpl.html GNU GPLv3.0
-     */
-
 /**
- * Class Redirect
- * @package Core
+ * class Redirect
+ * @package Rudra
  * Класс перенаправления url
  */
-Class Redirect
+class Redirect
 {
+
+    /**
+     * @var IContainer
+     */
+    protected $di;
+
     /**
      * @var
      * Строка запроса, значение разберается из данных url
@@ -31,9 +38,11 @@ Class Redirect
     /**
      * Redirect constructor.
      * @param $config
+     * @param IContainer $di
      */
-    public function __construct($config)
+    public function __construct(IContainer $di, $config)
     {
+        $this->di     = $di;
         $this->config = $config;
     }
 
@@ -61,14 +70,7 @@ Class Redirect
              * $_SERVER['REQUEST_URI'] или $_GET['r']
              * в зависимости от параметра Config::URI
              */
-            switch ($this->getConfig()) {
-                case 'REQUEST':
-                    $this->setRequest(trim($_SERVER['REQUEST_URI'], '/'));
-                    break;
-                case 'GET':
-                    $this->setRequest(trim($_GET['r'], '/'));
-                    break;
-            }
+            $this->setRequest();
 
             /*
              * Присваевает значение $this->request
@@ -88,6 +90,61 @@ Class Redirect
             $this->run(ltrim($matches[0], '/'));
         }
 
+        $this->redirectTo($url, $external);
+    }
+
+    public function responseCode($code)
+    {
+        if ('301' == $code) {
+            header("HTTP/1.1 301 Moved Permanently");
+        } elseif ('404' == $code) {
+            header("HTTP/1.1 404 Not Found");
+        } elseif ('403' == $code) {
+            header('HTTP/1.0 403 Forbidden');
+        } elseif ('333' == $code) {
+            header('HTTP/1.1 333 Du du du Fackboy');
+        } elseif ('200' == $code) {
+            header('HTTP/1.1 200');
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param mixed $request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function setRequest()
+    {
+        switch ($this->getConfig()) {
+            case 'REQUEST':
+                $this->request = trim($this->getDi()->getServer('REQUEST_URI'), '/');
+                break;
+            case 'GET':
+                $this->request = trim($this->getDi()->getGet('r'), '/');
+                break;
+        }
+    }
+
+    /**
+     * @param $url
+     * @param $external
+     */
+    private function redirectTo($url, $external)
+    {
         if ('basic' == $external) {
             header('Location: http://' . $url);
             exit;
@@ -104,42 +161,12 @@ Class Redirect
         }
     }
 
-    public function responseCode($code)
+    /**
+     * @return IContainer
+     */
+    public function getDi(): IContainer
     {
-        if ('301' == $code) {
-            header("HTTP/1.1 301 Moved Permanently");
-        } elseif ('404' == $code) {
-            header("HTTP/1.1 404 Not Found");
-        } elseif ('403' == $code) {
-            header('HTTP/1.0 403 Forbidden');
-        } elseif ('333' == $code) {
-            header('HTTP/1.1 333 Du du du Fackboy');
-        } elseif ('200' == $code){
-            header('HTTP/1.1 200');
-        }
+        return $this->di;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @param mixed $request
-     */
-    public function setRequest($request)
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
 }
