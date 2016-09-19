@@ -135,13 +135,10 @@ class Redirect
      */
     public function setRequest()
     {
-        switch ($this->getConfig()) {
-            case 'REQUEST':
-                $this->request = trim($this->getDi()->getServer('REQUEST_URI'), '/');
-                break;
-            case 'GET':
-                $this->request = trim($this->getDi()->getGet('r'), '/');
-                break;
+        if ('REQUEST' == $this->getConfig()) {
+            $this->request = trim($this->getDi()->getServer('REQUEST_URI'), '/');
+        } elseif ('GET' == $this->getConfig()) {
+            $this->request = trim($this->getDi()->getGet('r'), '/');
         }
     }
 
