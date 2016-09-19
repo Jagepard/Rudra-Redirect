@@ -37,8 +37,8 @@ class Redirect
 
     /**
      * Redirect constructor.
-     * @param $config
      * @param IContainer $di
+     * @param $config
      */
     public function __construct(IContainer $di, $config)
     {
