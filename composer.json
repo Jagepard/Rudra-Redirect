@@ -1,7 +1,7 @@
 {
     "name"        : "rudra/redirect",
     "description" : "The Rudra framework",
-    "version"     : "1.0.0-dev",
+    "version"     : "dev-master",
     "type"        : "library",
     "keywords"    : [
         "rudra",
