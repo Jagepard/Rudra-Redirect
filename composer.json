@@ -21,14 +21,15 @@
         "skype": "jagepard.ru"
     },
     "require"     : {
-        "php": ">=7.0"
+        "php": ">=7.1"
     },
     "require-dev" : {
-        "codeception/codeception": "*"
+        "satooshi/php-coveralls": "dev-master"
     },
     "autoload"    : {
         "psr-4": {
             "Rudra\\": "src/"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
