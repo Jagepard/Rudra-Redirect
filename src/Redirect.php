@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 /**
  * Date: 19.01.16
  * Time: 15:10
@@ -13,16 +15,17 @@ namespace Rudra;
 
 /**
  * class Redirect
+ *
  * @package Rudra
- * Класс перенаправления url
+ *          Класс перенаправления url
  */
-class Redirect
+class Redirect implements IRedirect
 {
 
     /**
      * @var IContainer
      */
-    protected $di;
+    protected $container;
 
     /**
      * @var
@@ -37,17 +40,18 @@ class Redirect
 
     /**
      * Redirect constructor.
-     * @param IContainer $di
-     * @param $config
+     *
+     * @param IContainer $container
+     * @param string     $config
      */
-    public function __construct(IContainer $di, $config)
+    public function __construct(IContainer $container, string $config)
     {
-        $this->di     = $di;
-        $this->config = $config;
+        $this->container = $container;
+        $this->config    = $config;
     }
 
     /**
-     * @param bool $url
+     * @param string $url
      * @param string $external
      * @param string $header
      *
@@ -60,10 +64,8 @@ class Redirect
      * если значение $url == 'self', то перенаправление будет
      * произведено на текущуй метод контроллера (текущуй адрес)
      */
-    public function run($url = null, $external = null, $header = null)
+    public function run(string $url = '', string $external = '', string $header = '')
     {
-        $this->responseCode($header);
-
         if ('self' == $url) {
             /*
              * Присваивает $this->request данные
@@ -76,76 +78,82 @@ class Redirect
              * Присваевает значение $this->request
              * в зависимости от наличия get запроса
              */
-            if (strpos($this->getRequest(), '?') !== false) {
-                preg_match('~[/[:word:]-]+(?=\?)~', $this->getRequest(), $matches);
+            if (strpos($this->request(), '?') !== false) {
+                preg_match('~[/[:word:]-]+(?=\?)~', $this->request(), $matches);
             } else {
-                $matches[0] = $this->getRequest();
-            }
-
-            if ('secure' == $external) {
-                $this->run(ltrim($matches[0], '/'), 'https');
+                $matches[0] = $this->request();
             }
 
             // Перенаправление по полученным данным
             $this->run(ltrim($matches[0], '/'));
+        } else {
+            $this->responseCode($header);
+            $this->redirectTo($url, $external);
         }
-
-        $this->redirectTo($url, $external);
     }
 
-    public function responseCode($code)
+    /**
+     * @param string $code
+     */
+    public function responseCode($code): void
     {
-        if ('301' == $code) {
-            header("HTTP/1.1 301 Moved Permanently");
-        } elseif ('404' == $code) {
-            header("HTTP/1.1 404 Not Found");
-        } elseif ('403' == $code) {
-            header('HTTP/1.0 403 Forbidden');
-        } elseif ('333' == $code) {
-            header('HTTP/1.1 333 Du du du Fackboy');
-        } elseif ('200' == $code) {
-            header('HTTP/1.1 200');
+        switch ($code) {
+            case '301':
+                header("HTTP/1.1 301 Moved Permanently");
+                break;
+            case '404':
+                header("HTTP/1.1 404 Not Found");
+                break;
+            case '403':
+                header('HTTP/1.0 403 Forbidden');
+                break;
+            case '200':
+                header('HTTP/1.1 200');
+                break;
         }
     }
 
     /**
      * @param $url
      * @param $external
+     *
+     * @return bool
      */
-    protected function redirectTo($url, $external)
+    protected function redirectTo($url, $external): bool
     {
-        if ('basic' == $external) {
-            header('Location: http://' . $url);
-            exit;
-        } elseif ('secure' == $external) {
-            header('Location: https://' . $url);
-            exit;
-        } elseif ('full' == $external) {
-            header('Location:' . $url);
-            exit;
-        } else {
-            $url = str_replace('.', '/', $url);
-            header('Location:' . APP_URL . '/' . $url);
-            exit;
+        switch ($external) {
+            case 'basic':
+                header('Location: http://' . $url);
+                return false;
+            case 'secure':
+                header('Location: https://' . $url);
+                return false;
+            case 'full':
+                header('Location:' . $url);
+                return false;
+            default:
+                $url = str_replace('.', '/', $url);
+                header('Location:' . APP_URL . '/' . $url);
+                return false;
         }
     }
 
     /**
      * @return mixed
      */
-    public function setRequest()
+    public function setRequest(): void
     {
-        if ('REQUEST' == $this->getConfig()) {
-            $this->request = trim($this->getDi()->getServer('REQUEST_URI'), '/');
-        } elseif ('GET' == $this->getConfig()) {
-            $this->request = trim($this->getDi()->getGet('r'), '/');
+        if ('REQUEST' == $this->config()) {
+            $this->request = trim($this->container()->getServer('REQUEST_URI'), '/');
+        } elseif ('GET' == $this->config()) {
+            $this->request = trim($this->container()->getGet('r'), '/');
         }
     }
 
     /**
      * @return mixed
      */
-    public function getConfig()
+    public function config()
     {
         return $this->config;
     }
@@ -153,7 +161,7 @@ class Redirect
     /**
      * @return mixed
      */
-    public function getRequest()
+    public function request()
     {
         return $this->request;
     }
@@ -161,9 +169,8 @@ class Redirect
     /**
      * @return IContainer
      */
-    public function getDi(): IContainer
+    public function container(): IContainer
     {
-        return $this->di;
+        return $this->container;
     }
-
 }
