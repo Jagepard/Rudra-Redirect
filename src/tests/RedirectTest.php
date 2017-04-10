@@ -15,7 +15,7 @@ declare(strict_types = 1);
 
 
 use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
-use Rudra\IContainer;
+use Rudra\ContainerInterface;
 use Rudra\Container;
 use Rudra\Redirect;
 
@@ -40,7 +40,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
 
     public function testContainer()
     {
-        $this->assertInstanceOf(IContainer::class, $this->redirect()->container());
+        $this->assertInstanceOf(ContainerInterface::class, $this->redirect()->container());
     }
 
     /**

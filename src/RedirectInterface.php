@@ -14,16 +14,21 @@ declare(strict_types = 1);
 namespace Rudra;
 
 
-interface IRedirect
+/**
+ * Interface RedirectInterface
+ *
+ * @package Rudra
+ */
+interface RedirectInterface
 {
 
     /**
-     * IRedirect constructor.
+     * RedirectInterface constructor.
      *
-     * @param IContainer $container
+     * @param ContainerInterface $container
      * @param string     $config
      */
-    public function __construct(IContainer $container, string $config);
+    public function __construct(ContainerInterface $container, string $config);
 
     /**
      * @param string $url

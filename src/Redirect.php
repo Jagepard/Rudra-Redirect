@@ -19,11 +19,11 @@ namespace Rudra;
  * @package Rudra
  *          Класс перенаправления url
  */
-class Redirect implements IRedirect
+class Redirect implements RedirectInterface
 {
 
     /**
-     * @var IContainer
+     * @var ContainerInterface
      */
     protected $container;
 
@@ -41,10 +41,10 @@ class Redirect implements IRedirect
     /**
      * Redirect constructor.
      *
-     * @param IContainer $container
+     * @param ContainerInterface $container
      * @param string     $config
      */
-    public function __construct(IContainer $container, string $config)
+    public function __construct(ContainerInterface $container, string $config)
     {
         $this->container = $container;
         $this->config    = $config;
@@ -167,9 +167,9 @@ class Redirect implements IRedirect
     }
 
     /**
-     * @return IContainer
+     * @return ContainerInterface
      */
-    public function container(): IContainer
+    public function container(): ContainerInterface
     {
         return $this->container;
     }
