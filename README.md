@@ -6,5 +6,7 @@
 [![Latest Stable Version](https://poser.pugx.org/rudra/validation/v/stable)](https://packagist.org/packages/rudra/redirect)
 [![Total Downloads](https://poser.pugx.org/rudra/validation/downloads)](https://packagist.org/packages/rudra/redirect)
 [![License](https://poser.pugx.org/rudra/validation/license)](https://packagist.org/packages/rudra/redirect)
+
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/2c442a6d-0fbe-4de9-8be4-0d878b76d32c/big.png)](https://insight.sensiolabs.com/projects/2c442a6d-0fbe-4de9-8be4-0d878b76d32c)
 # Rudra-Redirect
 Перенаправление

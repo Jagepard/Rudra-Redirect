@@ -4,7 +4,8 @@
     "type"              : "library",
     "keywords"          : [
         "rudra",
-        "redirect"
+        "redirect",
+        "redirection"
     ],
     "license"           : "MIT",
     "authors"           : [
