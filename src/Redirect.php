@@ -22,10 +22,7 @@ namespace Rudra;
 class Redirect implements RedirectInterface
 {
 
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    use SetContainerTrait;
 
     /**
      * @var
@@ -164,13 +161,5 @@ class Redirect implements RedirectInterface
     public function request()
     {
         return $this->request;
-    }
-
-    /**
-     * @return ContainerInterface
-     */
-    public function container(): ContainerInterface
-    {
-        return $this->container;
     }
 }
