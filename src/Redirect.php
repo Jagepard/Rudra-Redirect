@@ -1,9 +1,9 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /**
- * Date: 19.01.16
+ * Date: 19.01.16 Updated 21.04.18
  * Time: 15:10
  *
  * @author    : Korotkov Danila <dankorot@gmail.com>
@@ -25,141 +25,176 @@ class Redirect implements RedirectInterface
     use SetContainerTrait;
 
     /**
-     * @var
-     * Строка запроса, значение разберается из данных url
-     */
-    protected $request;
-
-    /**
-     * @var
-     */
-    protected $config;
-
-    /**
      * Redirect constructor.
-     *
      * @param ContainerInterface $container
-     * @param string     $config
      */
-    public function __construct(ContainerInterface $container, string $config)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->config    = $config;
     }
 
     /**
      * @param string $url
-     * @param string $external
-     * @param string $header
-     *
-     * Перенаправляет в соответствии с указанными параметрами
-     * $external - для перенаправления на внешние адреса,
-     * если $external == 1, то http://domain.com
-     * если $external == 2, то https://domain.com
-     * если параметр $external, не передан, то переадресация
-     * происходит по внутренним адресам приложения, при этом
-     * если значение $url == 'self', то перенаправление будет
-     * произведено на текущуй метод контроллера (текущуй адрес)
+     * @param string $type
+     * @param string $code
      */
-    public function run(string $url = '', string $external = '', string $header = '')
+    public function run(string $url = '', string $type = '', string $code = '302'): void
     {
-        if ('self' == $url) {
-            /*
-             * Присваивает $this->request данные
-             * $_SERVER['REQUEST_URI'] или $_GET['r']
-             * в зависимости от параметра Config::URI
-             */
-            $this->setRequest();
-
-            /*
-             * Присваевает значение $this->request
-             * в зависимости от наличия get запроса
-             */
-            if (strpos($this->request(), '?') !== false) {
-                preg_match('~[/[:word:]-]+(?=\?)~', $this->request(), $matches);
-            } else {
-                $matches[0] = $this->request();
-            }
-
-            // Перенаправление по полученным данным
-            $this->run(ltrim($matches[0], '/'));
-        } else {
-            $this->responseCode($header);
-            $this->redirectTo($url, $external);
-        }
+        $this->responseCode($code);
+        $this->redirectTo($url, $type);
+        exit;
     }
 
     /**
      * @param string $code
      */
-    public function responseCode($code): void
+    public function responseCode(string $code): void
     {
-        switch ($code) {
-            case '301':
-                header("HTTP/1.1 301 Moved Permanently");
-                break;
-            case '404':
-                header("HTTP/1.1 404 Not Found");
-                break;
-            case '403':
-                header('HTTP/1.0 403 Forbidden');
-                break;
-            case '200':
-                header('HTTP/1.1 200');
-                break;
+        if ($code !== null) {
+            switch ($code) {
+                case '100':
+                    $text = 'Continue';
+                    break;
+                case '101':
+                    $text = 'Switching Protocols';
+                    break;
+                case '200':
+                    $text = 'OK';
+                    break;
+                case '201':
+                    $text = 'Created';
+                    break;
+                case '202':
+                    $text = 'Accepted';
+                    break;
+                case '203':
+                    $text = 'Non-Authoritative Information';
+                    break;
+                case '204':
+                    $text = 'No Content';
+                    break;
+                case '205':
+                    $text = 'Reset Content';
+                    break;
+                case '206':
+                    $text = 'Partial Content';
+                    break;
+                case '300':
+                    $text = 'Multiple Choices';
+                    break;
+                case '301':
+                    $text = 'Moved Permanently';
+                    break;
+                case '302':
+                    $text = 'Moved Temporarily';
+                    break;
+                case '303':
+                    $text = 'See Other';
+                    break;
+                case '304':
+                    $text = 'Not Modified';
+                    break;
+                case '305':
+                    $text = 'Use Proxy';
+                    break;
+                case '400':
+                    $text = 'Bad Request';
+                    break;
+                case '401':
+                    $text = 'Unauthorized';
+                    break;
+                case '402':
+                    $text = 'Payment Required';
+                    break;
+                case '403':
+                    $text = 'Forbidden';
+                    break;
+                case '404':
+                    $text = 'Not Found';
+                    break;
+                case '405':
+                    $text = 'Method Not Allowed';
+                    break;
+                case '406':
+                    $text = 'Not Acceptable';
+                    break;
+                case '407':
+                    $text = 'Proxy Authentication Required';
+                    break;
+                case '408':
+                    $text = 'Request Time-out';
+                    break;
+                case '409':
+                    $text = 'Conflict';
+                    break;
+                case '410':
+                    $text = 'Gone';
+                    break;
+                case '411':
+                    $text = 'Length Required';
+                    break;
+                case '412':
+                    $text = 'Precondition Failed';
+                    break;
+                case '413':
+                    $text = 'Request Entity Too Large';
+                    break;
+                case '414':
+                    $text = 'Request-URI Too Large';
+                    break;
+                case '415':
+                    $text = 'Unsupported Media Type';
+                    break;
+                case '500':
+                    $text = 'Internal Server Error';
+                    break;
+                case '501':
+                    $text = 'Not Implemented';
+                    break;
+                case '502':
+                    $text = 'Bad Gateway';
+                    break;
+                case '503':
+                    $text = 'Service Unavailable';
+                    break;
+                case '504':
+                    $text = 'Gateway Time-out';
+                    break;
+                case '505':
+                    $text = 'HTTP Version not supported';
+                    break;
+                default:
+                    exit('Unknown http status code "' . htmlentities($code) . '"');
+                    break;
+            }
+
+            $protocol = $this->container()->getServer('SERVER_PROTOCOL') ?? 'HTTP/1.0';
+            header($protocol . ' ' . $code . ' ' . $text);
         }
     }
 
     /**
      * @param $url
-     * @param $external
-     *
-     * @return bool
+     * @param $type
      */
-    protected function redirectTo($url, $external): bool
+    protected function redirectTo($url, $type): void
     {
-        switch ($external) {
+        switch ($type) {
             case 'basic':
-                header('Location: http://' . $url);
-                return false;
+                $text = 'Location: http://';
+                break;
             case 'secure':
-                header('Location: https://' . $url);
-                return false;
+                $text = 'Location: https://';
+                break;
             case 'full':
-                header('Location:' . $url);
-                return false;
+                $text = 'Location:';
+                break;
             default:
-                $url = str_replace('.', '/', $url);
-                header('Location:' . APP_URL . '/' . $url);
-                return false;
+                $url  = str_replace('.', '/', $url);
+                $text = 'Location:' . APP_URL . '/';
+                break;
         }
-    }
 
-    /**
-     * @return mixed
-     */
-    public function setRequest(): void
-    {
-        if ('REQUEST' == $this->config()) {
-            $this->request = trim($this->container()->getServer('REQUEST_URI'), '/');
-        } elseif ('GET' == $this->config()) {
-            $this->request = trim($this->container()->getGet('r'), '/');
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function config()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function request()
-    {
-        return $this->request;
+        header($text . $url);
     }
 }
