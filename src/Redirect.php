@@ -138,6 +138,6 @@ class Redirect implements RedirectInterface
             return $this->redirectType[$type];
         }
 
-        return $text = 'Location:' . APP_URL . '/';
+        return 'Location:' . APP_URL . '/';
     }
 }
