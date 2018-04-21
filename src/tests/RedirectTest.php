@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /**
  * Date: 17.02.17
@@ -14,11 +14,10 @@ declare(strict_types = 1);
  */
 
 
-use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
-use Rudra\ContainerInterface;
-use Rudra\Container;
 use Rudra\Redirect;
-
+use Rudra\Container;
+use Rudra\ContainerInterface;
+use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 /**
  * Class RedirectTest
@@ -55,44 +54,10 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testRunSelf()
-    {
-        $this->redirect()->run('self');
-        $this->assertEquals('Location:' . APP_URL . '/test', xdebug_get_headers()[0]);
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
     public function testRunSecure()
     {
         $this->redirect()->run('example.com', 'secure');
         $this->assertEquals('Location: https://example.com', xdebug_get_headers()[0]);
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
-    public function testRunGet()
-    {
-        Container::$app         = null;
-        $this->redirect         = new Redirect(Container::app(), 'GET');
-
-        $this->redirect()->run('self');
-        $this->assertEquals('Location:' . APP_URL . '/test', xdebug_get_headers()[0]);
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
-    public function testRunWithGetParams()
-    {
-        Container::$app         = null;
-        $_SERVER['REQUEST_URI'] = 'test?id=123';
-        $this->redirect         = new Redirect(Container::app(), 'REQUEST');
-
-        $this->redirect()->run('self');
-        $this->assertEquals('Location:' . APP_URL . '/test', xdebug_get_headers()[0]);
     }
 
     /**

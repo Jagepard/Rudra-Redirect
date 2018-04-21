@@ -1,9 +1,9 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /**
- * Date: 19.01.16
+ * Date: 19.01.16 Updated 21.04.2018
  * Time: 15:10
  *
  * @author    : Korotkov Danila <dankorot@gmail.com>
@@ -14,10 +14,8 @@ declare(strict_types = 1);
 namespace Rudra;
 
 /**
- * class Redirect
- *
+ * Class Redirect
  * @package Rudra
- *          Класс перенаправления url
  */
 class Redirect implements RedirectInterface
 {
@@ -25,141 +23,121 @@ class Redirect implements RedirectInterface
     use SetContainerTrait;
 
     /**
-     * @var
-     * Строка запроса, значение разберается из данных url
+     * @var array
      */
-    protected $request;
-
+    protected $codeMessage = [
+        '100' => 'Continue',
+        '101' => 'Switching Protocols',
+        '200' => 'OK',
+        '201' => 'Created',
+        '202' => 'Accepted',
+        '203' => 'Non-Authoritative Information',
+        '204' => 'No Content',
+        '205' => 'Reset Content',
+        '206' => 'Partial Content',
+        '300' => 'Multiple Choices',
+        '301' => 'Moved Permanently',
+        '302' => 'Moved Temporarily',
+        '303' => 'See Other',
+        '304' => 'Not Modified',
+        '305' => 'Use Proxy',
+        '400' => 'Bad Request',
+        '401' => 'Unauthorized',
+        '402' => 'Payment Required',
+        '403' => 'Forbidden',
+        '404' => 'Not Found',
+        '405' => 'Method Not Allowed',
+        '406' => 'Not Acceptable',
+        '407' => 'Proxy Authentication Required',
+        '408' => 'Request Time-out',
+        '409' => 'Conflict',
+        '410' => 'Gone',
+        '411' => 'Length Required',
+        '412' => 'Precondition Failed',
+        '413' => 'Request Entity Too Large',
+        '414' => 'Request-URI Too Large',
+        '415' => 'Unsupported Media Type',
+        '500' => 'Internal Server Error',
+        '501' => 'Not Implemented',
+        '502' => 'Bad Gateway',
+        '503' => 'Service Unavailable',
+        '504' => 'Gateway Time-out',
+        '505' => 'HTTP Version not supported'
+    ];
     /**
-     * @var
+     * @var array
      */
-    protected $config;
+    protected $redirectType = [
+        'basic'  => 'Location: http://',
+        'secure' => 'Location: https://',
+        'full'   => 'Location:'
+    ];
 
     /**
      * Redirect constructor.
-     *
      * @param ContainerInterface $container
-     * @param string     $config
      */
-    public function __construct(ContainerInterface $container, string $config)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->config    = $config;
     }
 
     /**
      * @param string $url
-     * @param string $external
-     * @param string $header
-     *
-     * Перенаправляет в соответствии с указанными параметрами
-     * $external - для перенаправления на внешние адреса,
-     * если $external == 1, то http://domain.com
-     * если $external == 2, то https://domain.com
-     * если параметр $external, не передан, то переадресация
-     * происходит по внутренним адресам приложения, при этом
-     * если значение $url == 'self', то перенаправление будет
-     * произведено на текущуй метод контроллера (текущуй адрес)
+     * @param string $type
+     * @param string $code
      */
-    public function run(string $url = '', string $external = '', string $header = '')
+    public function run(string $url = '', string $type = '', string $code = '302'): void
     {
-        if ('self' == $url) {
-            /*
-             * Присваивает $this->request данные
-             * $_SERVER['REQUEST_URI'] или $_GET['r']
-             * в зависимости от параметра Config::URI
-             */
-            $this->setRequest();
+        $this->responseCode($code);
+        $this->redirectTo($url, $type);
 
-            /*
-             * Присваевает значение $this->request
-             * в зависимости от наличия get запроса
-             */
-            if (strpos($this->request(), '?') !== false) {
-                preg_match('~[/[:word:]-]+(?=\?)~', $this->request(), $matches);
-            } else {
-                $matches[0] = $this->request();
-            }
-
-            // Перенаправление по полученным данным
-            $this->run(ltrim($matches[0], '/'));
-        } else {
-            $this->responseCode($header);
-            $this->redirectTo($url, $external);
+        if (defined(DEV)) {
+            ('test' !== DEV) ?: exit; // @codeCoverageIgnore
         }
     }
 
     /**
      * @param string $code
      */
-    public function responseCode($code): void
+    public function responseCode(string $code): void
     {
-        switch ($code) {
-            case '301':
-                header("HTTP/1.1 301 Moved Permanently");
-                break;
-            case '404':
-                header("HTTP/1.1 404 Not Found");
-                break;
-            case '403':
-                header('HTTP/1.0 403 Forbidden');
-                break;
-            case '200':
-                header('HTTP/1.1 200');
-                break;
-        }
+        $protocol = $this->container()->getServer('SERVER_PROTOCOL') ?? 'HTTP/1.0';
+        header($protocol . ' ' . $code . ' ' . $this->getCodeMessage($code));
     }
 
     /**
      * @param $url
-     * @param $external
-     *
-     * @return bool
+     * @param $type
      */
-    protected function redirectTo($url, $external): bool
+    protected function redirectTo(string $url, string $type): void
     {
-        switch ($external) {
-            case 'basic':
-                header('Location: http://' . $url);
-                return false;
-            case 'secure':
-                header('Location: https://' . $url);
-                return false;
-            case 'full':
-                header('Location:' . $url);
-                return false;
-            default:
-                $url = str_replace('.', '/', $url);
-                header('Location:' . APP_URL . '/' . $url);
-                return false;
+        header($this->getRedirectType($type) . $url);
+    }
+
+    /**
+     * @param string $code
+     * @return string
+     */
+    public function getCodeMessage(string $code): string
+    {
+        if (array_key_exists($code, $this->codeMessage)) {
+            return $this->codeMessage[$code];
         }
+
+        exit('Unknown http status code "' . htmlentities($code) . '"'); // @codeCoverageIgnore
     }
 
     /**
-     * @return mixed
+     * @param string $type
+     * @return string
      */
-    public function setRequest(): void
+    public function getRedirectType(string $type): string
     {
-        if ('REQUEST' == $this->config()) {
-            $this->request = trim($this->container()->getServer('REQUEST_URI'), '/');
-        } elseif ('GET' == $this->config()) {
-            $this->request = trim($this->container()->getGet('r'), '/');
+        if (array_key_exists($type,  $this->redirectType)) {
+            return $this->redirectType[$type];
         }
-    }
 
-    /**
-     * @return mixed
-     */
-    public function config()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function request()
-    {
-        return $this->request;
+        return $text = 'Location:' . APP_URL . '/';
     }
 }
