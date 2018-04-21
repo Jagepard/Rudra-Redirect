@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Date: 19.01.16 Updated 21.04.18
+ * Date: 19.01.16 Updated 21.04.2018
  * Time: 15:10
  *
  * @author    : Korotkov Danila <dankorot@gmail.com>
@@ -14,15 +14,64 @@ declare(strict_types=1);
 namespace Rudra;
 
 /**
- * class Redirect
- *
+ * Class Redirect
  * @package Rudra
- *          Класс перенаправления url
  */
 class Redirect implements RedirectInterface
 {
 
     use SetContainerTrait;
+
+    /**
+     * @var array
+     */
+    protected $codeMessage = [
+        '100' => 'Continue',
+        '101' => 'Switching Protocols',
+        '200' => 'OK',
+        '201' => 'Created',
+        '202' => 'Accepted',
+        '203' => 'Non-Authoritative Information',
+        '204' => 'No Content',
+        '205' => 'Reset Content',
+        '206' => 'Partial Content',
+        '300' => 'Multiple Choices',
+        '301' => 'Moved Permanently',
+        '302' => 'Moved Temporarily',
+        '303' => 'See Other',
+        '304' => 'Not Modified',
+        '305' => 'Use Proxy',
+        '400' => 'Bad Request',
+        '401' => 'Unauthorized',
+        '402' => 'Payment Required',
+        '403' => 'Forbidden',
+        '404' => 'Not Found',
+        '405' => 'Method Not Allowed',
+        '406' => 'Not Acceptable',
+        '407' => 'Proxy Authentication Required',
+        '408' => 'Request Time-out',
+        '409' => 'Conflict',
+        '410' => 'Gone',
+        '411' => 'Length Required',
+        '412' => 'Precondition Failed',
+        '413' => 'Request Entity Too Large',
+        '414' => 'Request-URI Too Large',
+        '415' => 'Unsupported Media Type',
+        '500' => 'Internal Server Error',
+        '501' => 'Not Implemented',
+        '502' => 'Bad Gateway',
+        '503' => 'Service Unavailable',
+        '504' => 'Gateway Time-out',
+        '505' => 'HTTP Version not supported'
+    ];
+    /**
+     * @var array
+     */
+    protected $redirectType = [
+        'basic'  => 'Location: http://',
+        'secure' => 'Location: https://',
+        'full'   => 'Location:'
+    ];
 
     /**
      * Redirect constructor.
@@ -42,7 +91,10 @@ class Redirect implements RedirectInterface
     {
         $this->responseCode($code);
         $this->redirectTo($url, $type);
-        exit;
+
+        if (defined(DEV)) {
+            ('test' !== DEV) ?: exit; // @codeCoverageIgnore
+        }
     }
 
     /**
@@ -50,151 +102,42 @@ class Redirect implements RedirectInterface
      */
     public function responseCode(string $code): void
     {
-        if ($code !== null) {
-            switch ($code) {
-                case '100':
-                    $text = 'Continue';
-                    break;
-                case '101':
-                    $text = 'Switching Protocols';
-                    break;
-                case '200':
-                    $text = 'OK';
-                    break;
-                case '201':
-                    $text = 'Created';
-                    break;
-                case '202':
-                    $text = 'Accepted';
-                    break;
-                case '203':
-                    $text = 'Non-Authoritative Information';
-                    break;
-                case '204':
-                    $text = 'No Content';
-                    break;
-                case '205':
-                    $text = 'Reset Content';
-                    break;
-                case '206':
-                    $text = 'Partial Content';
-                    break;
-                case '300':
-                    $text = 'Multiple Choices';
-                    break;
-                case '301':
-                    $text = 'Moved Permanently';
-                    break;
-                case '302':
-                    $text = 'Moved Temporarily';
-                    break;
-                case '303':
-                    $text = 'See Other';
-                    break;
-                case '304':
-                    $text = 'Not Modified';
-                    break;
-                case '305':
-                    $text = 'Use Proxy';
-                    break;
-                case '400':
-                    $text = 'Bad Request';
-                    break;
-                case '401':
-                    $text = 'Unauthorized';
-                    break;
-                case '402':
-                    $text = 'Payment Required';
-                    break;
-                case '403':
-                    $text = 'Forbidden';
-                    break;
-                case '404':
-                    $text = 'Not Found';
-                    break;
-                case '405':
-                    $text = 'Method Not Allowed';
-                    break;
-                case '406':
-                    $text = 'Not Acceptable';
-                    break;
-                case '407':
-                    $text = 'Proxy Authentication Required';
-                    break;
-                case '408':
-                    $text = 'Request Time-out';
-                    break;
-                case '409':
-                    $text = 'Conflict';
-                    break;
-                case '410':
-                    $text = 'Gone';
-                    break;
-                case '411':
-                    $text = 'Length Required';
-                    break;
-                case '412':
-                    $text = 'Precondition Failed';
-                    break;
-                case '413':
-                    $text = 'Request Entity Too Large';
-                    break;
-                case '414':
-                    $text = 'Request-URI Too Large';
-                    break;
-                case '415':
-                    $text = 'Unsupported Media Type';
-                    break;
-                case '500':
-                    $text = 'Internal Server Error';
-                    break;
-                case '501':
-                    $text = 'Not Implemented';
-                    break;
-                case '502':
-                    $text = 'Bad Gateway';
-                    break;
-                case '503':
-                    $text = 'Service Unavailable';
-                    break;
-                case '504':
-                    $text = 'Gateway Time-out';
-                    break;
-                case '505':
-                    $text = 'HTTP Version not supported';
-                    break;
-                default:
-                    exit('Unknown http status code "' . htmlentities($code) . '"');
-                    break;
-            }
-
-            $protocol = $this->container()->getServer('SERVER_PROTOCOL') ?? 'HTTP/1.0';
-            header($protocol . ' ' . $code . ' ' . $text);
-        }
+        $protocol = $this->container()->getServer('SERVER_PROTOCOL') ?? 'HTTP/1.0';
+        header($protocol . ' ' . $code . ' ' . $this->getCodeMessage($code));
     }
 
     /**
      * @param $url
      * @param $type
      */
-    protected function redirectTo($url, $type): void
+    protected function redirectTo(string $url, string $type): void
     {
-        switch ($type) {
-            case 'basic':
-                $text = 'Location: http://';
-                break;
-            case 'secure':
-                $text = 'Location: https://';
-                break;
-            case 'full':
-                $text = 'Location:';
-                break;
-            default:
-                $url  = str_replace('.', '/', $url);
-                $text = 'Location:' . APP_URL . '/';
-                break;
+        header($this->getRedirectType($type) . $url);
+    }
+
+    /**
+     * @param string $code
+     * @return string
+     */
+    public function getCodeMessage(string $code): string
+    {
+        if (array_key_exists($code, $this->codeMessage)) {
+            return $this->codeMessage[$code];
         }
 
-        header($text . $url);
+        exit('Unknown http status code "' . htmlentities($code) . '"'); // @codeCoverageIgnore
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    public function getRedirectType(string $type): string
+    {
+        if (array_key_exists($type,  $this->redirectType)) {
+            return $this->redirectType[$type];
+        }
+
+        return $text = 'Location:' . APP_URL . '/';
     }
 }
