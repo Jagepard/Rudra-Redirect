@@ -24,9 +24,6 @@
         "php"             : ">=7.1",
         "rudra/container" : "self.version"
     },
-    "require-dev"       : {
-        "satooshi/php-coveralls" : "dev-master"
-    },
     "autoload"          : {
         "psr-4" : {
             "Rudra\\" : "src/"
