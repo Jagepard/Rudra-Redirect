@@ -132,7 +132,7 @@ class Redirect implements RedirectInterface
      * @param string $type
      * @return string
      */
-    public function getRedirectType(string $type): string
+    protected function getRedirectType(string $type): string
     {
         if (array_key_exists($type,  $this->redirectType)) {
             return $this->redirectType[$type];
