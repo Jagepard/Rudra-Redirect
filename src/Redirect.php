@@ -103,7 +103,7 @@ class Redirect implements RedirectInterface
     {
         $this->responseCode($code);
         $this->redirectTo($url, $type);
-        ('test' !== $this->getEnv()) ?: exit; // @codeCoverageIgnore
+        ('test' == $this->getEnv()) ?: exit; // @codeCoverageIgnore
     }
 
     /**
