@@ -72,14 +72,26 @@ class Redirect implements RedirectInterface
         'secure' => 'Location: https://',
         'full'   => 'Location:'
     ];
+    /**
+     * @var string
+     */
+    protected $appUrl;
+    /**
+     * @var string
+     */
+    protected $env;
 
     /**
      * Redirect constructor.
      * @param ContainerInterface $container
+     * @param string             $appUrl
+     * @param string             $env
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, string $appUrl, string $env)
     {
         $this->container = $container;
+        $this->appUrl    = $appUrl;
+        $this->env       = $env;
     }
 
     /**
@@ -91,10 +103,7 @@ class Redirect implements RedirectInterface
     {
         $this->responseCode($code);
         $this->redirectTo($url, $type);
-
-        if (defined(DEV)) {
-            ('test' !== DEV) ?: exit; // @codeCoverageIgnore
-        }
+        ('test' !== $this->getEnv()) ?: exit; // @codeCoverageIgnore
     }
 
     /**
@@ -134,10 +143,26 @@ class Redirect implements RedirectInterface
      */
     protected function getRedirectType(string $type): string
     {
-        if (array_key_exists($type,  $this->redirectType)) {
+        if (array_key_exists($type, $this->redirectType)) {
             return $this->redirectType[$type];
         }
 
-        return 'Location:' . APP_URL . '/';
+        return 'Location:' . $this->getAppUrl() . '/';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppUrl(): string
+    {
+        return $this->appUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEnv(): string
+    {
+        return $this->env;
     }
 }
