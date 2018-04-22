@@ -25,8 +25,10 @@ interface RedirectInterface
     /**
      * RedirectInterface constructor.
      * @param ContainerInterface $container
+     * @param string             $appUrl
+     * @param string             $env
      */
-    public function __construct(ContainerInterface $container);
+    public function __construct(ContainerInterface $container, string $appUrl, string $env);
 
     /**
      * @param string $url

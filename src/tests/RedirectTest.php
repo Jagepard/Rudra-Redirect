@@ -34,12 +34,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     {
         $_SERVER['REQUEST_URI'] = 'test';
         $_GET['r']              = 'test';
-        $this->redirect         = new Redirect(Container::app(), 'REQUEST');
-    }
-
-    public function testContainer()
-    {
-        $this->assertInstanceOf(ContainerInterface::class, $this->redirect()->container());
+        $this->redirect         = new Redirect(Container::app(), 'http://example.com', 'test');
     }
 
     /**
@@ -48,7 +43,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     public function testRun()
     {
         $this->redirect()->run();
-        $this->assertEquals('Location:' . APP_URL . '/', xdebug_get_headers()[0]);
+        $this->assertEquals('Location:' . $this->redirect()->getAppUrl() . '/', xdebug_get_headers()[0]);
     }
 
     /**
