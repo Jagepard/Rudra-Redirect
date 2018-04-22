@@ -119,7 +119,7 @@ class Redirect implements RedirectInterface
      * @param string $code
      * @return string
      */
-    public function getCodeMessage(string $code): string
+    protected function getCodeMessage(string $code): string
     {
         if (array_key_exists($code, $this->codeMessage)) {
             return $this->codeMessage[$code];
