@@ -5,8 +5,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/86edd8dbec394319afd00d7c5eff88bc)](https://www.codacy.com/app/Jagepard/Rudra-Redirect?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Jagepard/Rudra-Redirect&amp;utm_campaign=Badge_Grade)
 -----
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/Jagepard/Rudra-Redirect/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
-[![Latest Stable Version](https://poser.pugx.org/rudra/redirect/v/stable)](https://packagist.org/packages/rudra/router)
-[![Total Downloads](https://poser.pugx.org/rudra/redirect/downloads)](https://packagist.org/packages/rudra/router)
+[![Latest Stable Version](https://poser.pugx.org/rudra/redirect/v/stable)](https://packagist.org/packages/rudra/redirect)
+[![Total Downloads](https://poser.pugx.org/rudra/redirect/downloads)](https://packagist.org/packages/rudra/redirect)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-498e7f.svg)](https://www.gnu.org/licenses/gpl-3.0)
 # Rudra-Redirect
 Перенаправление
