@@ -3,15 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Date: 19.01.16 Updated 21.04.2018
- * Time: 15:10
- *
  * @author    : Korotkov Danila <dankorot@gmail.com>
- * @copyright Copyright (c) 2016, Korotkov Danila
+ * @copyright Copyright (c) 2018, Korotkov Danila
  * @license   http://www.gnu.org/licenses/gpl.html GNU GPLv3.0
  */
 
 namespace Rudra;
+
+use Rudra\Interfaces\ContainerInterface;
+use Rudra\Interfaces\RedirectInterface;
+use Rudra\ExternalTraits\SetContainerTrait;
 
 /**
  * Class Redirect
@@ -22,6 +23,14 @@ class Redirect implements RedirectInterface
 
     use SetContainerTrait;
 
+    /**
+     * @var string
+     */
+    protected $env;
+    /**
+     * @var string
+     */
+    protected $url;
     /**
      * @var array
      */
@@ -68,30 +77,22 @@ class Redirect implements RedirectInterface
      * @var array
      */
     protected $redirectType = [
+        'full'   => 'Location:',
         'basic'  => 'Location: http://',
-        'secure' => 'Location: https://',
-        'full'   => 'Location:'
+        'secure' => 'Location: https://'
     ];
-    /**
-     * @var string
-     */
-    protected $appUrl;
-    /**
-     * @var string
-     */
-    protected $env;
 
     /**
      * Redirect constructor.
      * @param ContainerInterface $container
-     * @param string             $appUrl
+     * @param string             $url
      * @param string             $env
      */
-    public function __construct(ContainerInterface $container, string $appUrl, string $env)
+    public function __construct(ContainerInterface $container, string $url, string $env)
     {
-        $this->container = $container;
-        $this->appUrl    = $appUrl;
         $this->env       = $env;
+        $this->url       = $url;
+        $this->container = $container;
     }
 
     /**
@@ -103,7 +104,7 @@ class Redirect implements RedirectInterface
     {
         $this->responseCode($code);
         $this->redirectTo($url, $type);
-        ('test' == $this->getEnv()) ?: exit; // @codeCoverageIgnore
+        ('test' == $this->env) ?: exit; // @codeCoverageIgnore
     }
 
     /**
@@ -147,22 +148,14 @@ class Redirect implements RedirectInterface
             return $this->redirectType[$type];
         }
 
-        return 'Location:' . $this->getAppUrl() . '/';
+        return 'Location:' . $this->url . '/';
     }
 
     /**
      * @return string
      */
-    public function getAppUrl(): string
+    public function getUrl(): string
     {
-        return $this->appUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEnv(): string
-    {
-        return $this->env;
+        return $this->url;
     }
 }
