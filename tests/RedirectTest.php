@@ -40,7 +40,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     public function testRun()
     {
         $this->redirect()->run();
-        $this->assertEquals('Location:' . $this->redirect()->getUrl() . '/', xdebug_get_headers()[0]);
+        $this->assertEquals('Location:' . $this->redirect()->url() . '/', xdebug_get_headers()[0]);
     }
 
     /**
