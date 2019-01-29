@@ -148,7 +148,7 @@ class Redirect implements RedirectInterface
             return $this->redirectType[$type];
         }
 
-        return 'Location:' . $this->url . '/';
+        return 'Location:' . $this->url() . '/';
     }
 
     /**
