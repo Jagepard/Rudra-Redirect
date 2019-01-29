@@ -104,7 +104,7 @@ class Redirect implements RedirectInterface
     {
         $this->responseCode($code);
         $this->redirectTo($url, $type);
-        ('test' == $this->env) ?: exit; // @codeCoverageIgnore
+        ('test' == $this->env()) ?: exit; // @codeCoverageIgnore
     }
 
     /**
@@ -148,14 +148,22 @@ class Redirect implements RedirectInterface
             return $this->redirectType[$type];
         }
 
-        return 'Location:' . $this->url . '/';
+        return 'Location:' . $this->url() . '/';
     }
 
     /**
      * @return string
      */
-    public function getUrl(): string
+    public function url(): string
     {
         return $this->url;
+    }
+
+    /**
+     * @return string
+     */
+    public function env(): string
+    {
+        return $this->env;
     }
 }
