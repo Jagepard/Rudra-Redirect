@@ -34,7 +34,7 @@ class Redirect implements RedirectInterface
     /**
      * @var array
      */
-    public static $codeMessage = [
+    public $codeMessage = [
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',            // RFC2518
