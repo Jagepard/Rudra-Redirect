@@ -7,9 +7,7 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/Jagepard/Rudra-Redirect/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 [![Latest Stable Version](https://poser.pugx.org/rudra/redirect/v/stable)](https://packagist.org/packages/rudra/redirect)
 [![Total Downloads](https://poser.pugx.org/rudra/redirect/downloads)](https://packagist.org/packages/rudra/redirect)
-[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-498e7f.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![GitHub](https://img.shields.io/github/license/jagepard/Rudra-Redirect.svg)
 
 # Rudra-Redirect | [API](https://github.com/Jagepard/Rudra-Redirect/blob/master/docs.md "Documentation API")
 Перенаправление
-
-![Rudra-Redirect](https://github.com/Jagepard/Rudra-Redirect/blob/master/UML.png)
