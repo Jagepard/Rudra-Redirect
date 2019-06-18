@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /**
- * @author    : Korotkov Danila <dankorot@gmail.com>
- * @copyright Copyright (c) 2018, Korotkov Danila
- * @license   http://www.gnu.org/licenses/gpl.html GNU GPLv3.0
+ * @author    : Jagepard <jagepard@yandex.ru">
+ * @copyright Copyright (c) 2019, Jagepard
+ * @license   https://mit-license.org/ MIT
  */
 
 namespace Rudra;
@@ -14,23 +14,18 @@ use Rudra\Interfaces\ContainerInterface;
 use Rudra\Interfaces\RedirectInterface;
 use Rudra\ExternalTraits\SetContainerTrait;
 
-/**
- * Class Redirect
- * @package Rudra
- */
 class Redirect implements RedirectInterface
 {
-
     use SetContainerTrait;
 
     /**
      * @var string
      */
-    protected $env;
+    private $env;
     /**
      * @var string
      */
-    protected $url;
+    private $url;
     /**
      * @var array
      */
@@ -101,7 +96,7 @@ class Redirect implements RedirectInterface
     /**
      * @var array
      */
-    protected $redirectType = [
+    private $redirectType = [
         'full'   => 'Location:',
         'basic'  => 'Location: http://',
         'secure' => 'Location: https://'
@@ -129,7 +124,7 @@ class Redirect implements RedirectInterface
     {
         $this->responseCode($code);
         $this->redirectTo($url, $type);
-        ('test' == $this->env()) ?: exit; // @codeCoverageIgnore
+        ('test' === $this->env) ?: exit; // @codeCoverageIgnore
     }
 
     /**
@@ -145,7 +140,7 @@ class Redirect implements RedirectInterface
      * @param $url
      * @param $type
      */
-    protected function redirectTo(string $url, string $type): void
+    private function redirectTo(string $url, string $type): void
     {
         header($this->getRedirectType($type) . $url);
     }
@@ -154,7 +149,7 @@ class Redirect implements RedirectInterface
      * @param string $code
      * @return string
      */
-    protected function getCodeMessage(string $code): string
+    private function getCodeMessage(string $code): string
     {
         if (array_key_exists($code, $this->codeMessage)) {
             return $this->codeMessage[$code];
@@ -167,7 +162,7 @@ class Redirect implements RedirectInterface
      * @param string $type
      * @return string
      */
-    protected function getRedirectType(string $type): string
+    private function getRedirectType(string $type): string
     {
         if (array_key_exists($type, $this->redirectType)) {
             return $this->redirectType[$type];
@@ -182,13 +177,5 @@ class Redirect implements RedirectInterface
     public function url(): string
     {
         return $this->url;
-    }
-
-    /**
-     * @return string
-     */
-    public function env(): string
-    {
-        return $this->env;
     }
 }
