@@ -11,16 +11,6 @@ namespace Rudra\Redirect;
 
 interface RedirectInterface
 {
-    /**
-     * @param string $url
-     * @param string $type
-     * @param string $code
-     * @return mixed
-     */
-    public function run(string $url = '', string $type = '', string $code = ''): void;
-
-    /**
-     * @param string $code
-     */
+    public function run(string $url = "", string $type = "", string $code = ""): void;
     public function responseCode(string $code): void;
 }
