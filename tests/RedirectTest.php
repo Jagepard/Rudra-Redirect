@@ -4,30 +4,37 @@ declare(strict_types=1);
 
 /**
  * @author    : Jagepard <jagepard@yandex.ru">
- * @copyright Copyright (c) 2019, Jagepard
  * @license   https://mit-license.org/ MIT
  *
  *  phpunit src/tests/ContainerTest --coverage-html src/tests/coverage-html
  */
 
-namespace Rudra\Tests;
+namespace Rudra\Redirect\Tests;
 
-use Rudra\Redirect;
-use Rudra\Container;
+use Rudra\Container\Interfaces\RudraInterface;
+use Rudra\Container\Facades\{Request, Rudra};
+use Rudra\Redirect\RedirectFacade as Redirect;
 use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 class RedirectTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @var Redirect
-     */
-    protected $redirect;
-
     protected function setUp(): void
     {
-        $_SERVER['REQUEST_URI'] = 'test';
-        $_GET['r']              = 'test';
-        $this->redirect         = new Redirect(Container::app(), 'http://example.com', 'test');
+        Rudra::setConfig([
+            "siteUrl" => "http://example.com",
+            "environment" => "test"
+        ]);
+        Rudra::setServices(
+            [
+                "contracts" => [
+                    RudraInterface::class => Rudra::run(),
+                ],
+
+                "services" => []
+            ]
+        );
+        Request::get()->set(["r" => "test"]);
+        Request::server()->set(["REQUEST_URI" => "test"]);
     }
 
     /**
@@ -35,8 +42,8 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testRun()
     {
-        $this->redirect()->run();
-        $this->assertEquals('Location:' . $this->redirect()->url() . '/', xdebug_get_headers()[0]);
+        Redirect::run();
+        $this->assertEquals("Location:" . Rudra::config()->get("siteUrl") . '/', xdebug_get_headers()[0]);
     }
 
     /**
@@ -44,8 +51,8 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testRunSecure()
     {
-        $this->redirect()->run('example.com', 'secure');
-        $this->assertEquals('Location: https://example.com', xdebug_get_headers()[0]);
+        Redirect::run("example.com", "secure");
+        $this->assertEquals("Location: https://example.com", xdebug_get_headers()[0]);
     }
 
     /**
@@ -53,8 +60,8 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testRunFull()
     {
-        $this->redirect()->run('https://example.com', 'full');
-        $this->assertEquals('Location:https://example.com', xdebug_get_headers()[0]);
+        Redirect::run("https://example.com", "full");
+        $this->assertEquals("Location:https://example.com", xdebug_get_headers()[0]);
     }
 
     /**
@@ -62,8 +69,8 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testRunBasic()
     {
-        $this->redirect()->run('example.com', 'basic');
-        $this->assertEquals('Location: http://example.com', xdebug_get_headers()[0]);
+        Redirect::run("example.com", "basic");
+        $this->assertEquals("Location: http://example.com", xdebug_get_headers()[0]);
     }
 
     /**
@@ -71,7 +78,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseCode200()
     {
-        $this->redirect()->responseCode('200');
+        Redirect::responseCode("200");
         $this->assertEquals(200, http_response_code());
     }
 
@@ -80,7 +87,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseCode301()
     {
-        $this->redirect()->responseCode('301');
+        Redirect::responseCode("301");
         $this->assertEquals(301, http_response_code());
     }
 
@@ -89,7 +96,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseCode403()
     {
-        $this->redirect()->responseCode('403');
+        Redirect::responseCode("403");
         $this->assertEquals(403, http_response_code());
     }
 
@@ -98,15 +105,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseCode404()
     {
-        $this->redirect()->responseCode('404');
+        Redirect::responseCode("404");
         $this->assertEquals(404, http_response_code());
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function redirect(): Redirect
-    {
-        return $this->redirect;
     }
 }
