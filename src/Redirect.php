@@ -91,9 +91,7 @@ class Redirect implements RedirectInterface
         $this->responseCode($code);
         $this->redirectTo($url, $type);
 
-        if ($this->rudra()->config()->has("environment")) {
-            ("test" === $this->rudra()->config()->get("environment")) ?: exit; // @codeCoverageIgnore
-        }
+        ("test" === $this->rudra()->config()->get("environment")) ?: exit; // @codeCoverageIgnore
     }
 
     public function responseCode(string $code): void
