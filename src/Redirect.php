@@ -91,9 +91,7 @@ class Redirect implements RedirectInterface
         $this->responseCode($code);
         $this->redirectTo($url, $type);
 
-        if ($this->rudra()->config()->has("environment")) {
-            ("test" === $this->rudra()->config()->get("environment")) ?: exit; // @codeCoverageIgnore
-        }
+        ("test" === $this->rudra()->config()->get("environment")) ?: exit; // @codeCoverageIgnore
     }
 
     public function responseCode(string $code): void
@@ -122,10 +120,6 @@ class Redirect implements RedirectInterface
     {
         if (array_key_exists($type, $this->redirectType)) {
             return $this->redirectType[$type];
-        }
-
-        if (!$this->rudra()->config()->has("siteUrl")) {
-            throw new \InvalidArgumentException("'siteUrl' does not exist in config");// @codeCoverageIgnore
         }
 
         return "Location:" . $this->rudra()->config()->get("siteUrl") . "/";
