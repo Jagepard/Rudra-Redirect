@@ -122,10 +122,6 @@ class Redirect implements RedirectInterface
             return $this->redirectType[$type];
         }
 
-        if (!$this->rudra()->config()->has("siteUrl")) {
-            throw new \InvalidArgumentException("'siteUrl' does not exist in config");// @codeCoverageIgnore
-        }
-
         return "Location:" . $this->rudra()->config()->get("siteUrl") . "/";
     }
 }
