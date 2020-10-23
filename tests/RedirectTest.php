@@ -20,19 +20,11 @@ class RedirectTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp(): void
     {
-        Rudra::setConfig([
+        Rudra::config([
             "siteUrl" => "http://example.com",
             "environment" => "test"
         ]);
-        Rudra::setServices(
-            [
-                "contracts" => [
-                    RudraInterface::class => Rudra::run(),
-                ],
-
-                "services" => []
-            ]
-        );
+        Rudra::binding([RudraInterface::class => Rudra::run()]);
         Request::get()->set(["r" => "test"]);
         Request::server()->set(["REQUEST_URI" => "test"]);
     }
