@@ -9,12 +9,11 @@ declare(strict_types=1);
 
 namespace Rudra\Redirect;
 
-use Rudra\Container\Traits\SetRudraContainersTrait;
+use Rudra\Container\Facades\Request;
+use Rudra\Container\Facades\Rudra;
 
 class Redirect implements RedirectInterface
 {
-    use SetRudraContainersTrait;
-
     public array $codeMessage = [
         100 => "Continue",
         101 => "Switching Protocols",
@@ -91,13 +90,13 @@ class Redirect implements RedirectInterface
         $this->responseCode($code);
         $this->redirectTo($url, $type);
 
-        ("test" === $this->rudra()->config()->get("environment")) ?: exit; // @codeCoverageIgnore
+        ("test" === Rudra::config()->get("environment")) ?: exit; // @codeCoverageIgnore
     }
 
     public function responseCode(string $code): void
     {
-        $protocol = $this->rudra()->request()->server()->has("SERVER_PROTOCOL")
-            ? $this->rudra()->request()->server()->get("SERVER_PROTOCOL")
+        $protocol = Request::server()->has("SERVER_PROTOCOL")
+            ? Request::server()->get("SERVER_PROTOCOL")
             : "HTTP/1.0";
         header($protocol . ' ' . $code . ' ' . $this->getCodeMessage($code));
     }
@@ -122,6 +121,6 @@ class Redirect implements RedirectInterface
             return $this->redirectType[$type];
         }
 
-        return "Location:" . $this->rudra()->config()->get("siteUrl") . "/";
+        return "Location:" . Rudra::config()->get("siteUrl") . "/";
     }
 }
