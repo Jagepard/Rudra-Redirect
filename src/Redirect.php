@@ -121,6 +121,6 @@ class Redirect implements RedirectInterface
             return $this->redirectType[$type];
         }
 
-        return "Location:" . Rudra::config()->get("siteUrl") . "/";
+        return "Location:" . Rudra::config()->get("url") . "/";
     }
 }
