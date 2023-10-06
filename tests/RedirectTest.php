@@ -21,7 +21,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     protected function setUp(): void
     {
         Rudra::config([
-            "siteUrl" => "http://example.com",
+            "url"         => "http://example.com",
             "environment" => "test"
         ]);
         Rudra::binding([RudraInterface::class => Rudra::run()]);
@@ -35,7 +35,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     public function testRun()
     {
         Redirect::run();
-        $this->assertEquals("Location:" . Rudra::config()->get("siteUrl") . '/', xdebug_get_headers()[0]);
+        $this->assertEquals("Location:" . Rudra::config()->get("url") . '/', xdebug_get_headers()[0]);
     }
 
     /**

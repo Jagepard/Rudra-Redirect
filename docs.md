@@ -1,34 +1,37 @@
 ## Table of contents
+- [Rudra\Redirect\Redirect](#rudra_redirect_redirect)
+- [Rudra\Redirect\RedirectFacade](#rudra_redirect_redirectfacade)
+- [Rudra\Redirect\RedirectInterface](#rudra_redirect_redirectinterface)
+<hr>
 
-- [\Rudra\Redirect](#class-rudraredirect)
-- [\Rudra\Interfaces\RedirectInterface (interface)](#interface-rudrainterfacesredirectinterface)
+<a id="rudra_redirect_redirect"></a>
 
-<hr /><a id="class-rudraredirect"></a>
-### Class: \Rudra\Redirect
-
-> Class Redirect
-
+### Class: Rudra\Redirect\Redirect
+##### implements [Rudra\Redirect\RedirectInterface](#rudra_redirect_redirectinterface)
 | Visibility | Function |
 |:-----------|:---------|
-| public | <strong>__construct(</strong><em>\Rudra\Interfaces\ContainerInterface</em> <strong>$container</strong>, <em>\string</em> <strong>$url</strong>, <em>\string</em> <strong>$env</strong>)</strong> : <em>void</em><br /><em>Redirect constructor.</em> |
-| public | <strong>container()</strong> : <em>\Rudra\Interfaces\ContainerInterface</em> |
-| public | <strong>getUrl()</strong> : <em>string</em> |
-| public | <strong>responseCode(</strong><em>\string</em> <strong>$code</strong>)</strong> : <em>void</em> |
-| public | <strong>run(</strong><em>\string</em> <strong>$url=`''`</strong>, <em>\string</em> <strong>$type=`''`</strong>, <em>\string</em> <strong>$code=`'302'`</strong>)</strong> : <em>void</em> |
-| protected | <strong>getCodeMessage(</strong><em>\string</em> <strong>$code</strong>)</strong> : <em>string</em> |
-| protected | <strong>getRedirectType(</strong><em>\string</em> <strong>$type</strong>)</strong> : <em>string</em> |
-| protected | <strong>redirectTo(</strong><em>mixed/\string</em> <strong>$url</strong>, <em>mixed/\string</em> <strong>$type</strong>)</strong> : <em>void</em> |
+|public|<em><strong>run</strong>( string $url  string $type  string $code ): void</em><br>Redirects to the specified destination<br>Перенаправляет по указанному адресату|
+|public|<em><strong>responseCode</strong>( string $code ): void</em><br>Sets HTTP response status code<br>Устанавливает код состояния ответа HTTP|
+|private|<em><strong>redirectTo</strong>( string $url  string $type ): void</em><br>Redirects to the specified destination<br>Перенаправляет по указанному адресату|
+|private|<em><strong>getCodeMessage</strong>( string $code ): string</em><br>Gets HTTP status message<br>Получает сообщение о статусе HTTP|
+|private|<em><strong>getRedirectType</strong>( string $type ): string</em><br>Gets the prefix for the HTTP header<br>Получает префикс для HTTPзаголовка|
 
-*This class implements [\Rudra\Interfaces\RedirectInterface](#interface-rudrainterfacesredirectinterface)*
 
-<hr /><a id="interface-rudrainterfacesredirectinterface"></a>
-### Interface: \Rudra\Interfaces\RedirectInterface
+<a id="rudra_redirect_redirectfacade"></a>
 
-> Interface RedirectInterface
-
+### Class: Rudra\Redirect\RedirectFacade
 | Visibility | Function |
 |:-----------|:---------|
-| public | <strong>__construct(</strong><em>\Rudra\Interfaces\ContainerInterface</em> <strong>$container</strong>, <em>\string</em> <strong>$appUrl</strong>, <em>\string</em> <strong>$env</strong>)</strong> : <em>void</em><br /><em>RedirectInterface constructor.</em> |
-| public | <strong>responseCode(</strong><em>\string</em> <strong>$code</strong>)</strong> : <em>void</em> |
-| public | <strong>run(</strong><em>\string</em> <strong>$url=`''`</strong>, <em>\string</em> <strong>$type=`''`</strong>, <em>\string</em> <strong>$code=`''`</strong>)</strong> : <em>mixed</em> |
+|public static|<em><strong>__callStatic</strong>( string $method  array $parameters )</em><br>Calls class methods statically<br>Вызывает методы класса статически|
 
+
+<a id="rudra_redirect_redirectinterface"></a>
+
+### Class: Rudra\Redirect\RedirectInterface
+| Visibility | Function |
+|:-----------|:---------|
+|abstract public|<em><strong>run</strong>( string $url  string $type  string $code ): void</em><br>Redirects to the specified destination<br>Перенаправляет по указанному адресату|
+|abstract public|<em><strong>responseCode</strong>( string $code ): void</em><br>Sets HTTP response status code<br>Устанавливает код состояния ответа HTTP|
+<hr>
+
+###### created with [Rudra-Documentation-Collector](#https://github.com/Jagepard/Rudra-Documentation-Collector)

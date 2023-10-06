@@ -85,6 +85,16 @@ class Redirect implements RedirectInterface
         "secure" => "Location: https://"
     ];
 
+    /**
+     * Redirects to the specified destination
+     * --------------------------------------
+     * Перенаправляет по указанному адресату
+     *
+     * @param  string $url
+     * @param  string $type
+     * @param  string $code
+     * @return void
+     */
     public function run(string $url = "", string $type = "", string $code = "302"): void
     {
         $this->responseCode($code);
@@ -93,6 +103,14 @@ class Redirect implements RedirectInterface
         ("test" === Rudra::config()->get("environment")) ?: exit; // @codeCoverageIgnore
     }
 
+    /**
+     * Sets HTTP response status code
+     * ------------------------------
+     * Устанавливает код состояния ответа HTTP
+     *
+     * @param  string $code
+     * @return void
+     */
     public function responseCode(string $code): void
     {
         $protocol = Request::server()->has("SERVER_PROTOCOL")
@@ -101,11 +119,28 @@ class Redirect implements RedirectInterface
         header($protocol . ' ' . $code . ' ' . $this->getCodeMessage($code));
     }
 
+    /**
+     * Redirects to the specified destination
+     * --------------------------------------
+     * Перенаправляет по указанному адресату
+     *
+     * @param  string $url
+     * @param  string $type
+     * @return void
+     */
     private function redirectTo(string $url, string $type): void
     {
         header($this->getRedirectType($type) . $url);
     }
 
+    /**
+     * Gets HTTP status message
+     * ------------------------
+     * Получает сообщение о статусе HTTP
+     *
+     * @param  string $code
+     * @return string
+     */
     private function getCodeMessage(string $code): string
     {
         if (array_key_exists($code, $this->codeMessage)) {
@@ -115,6 +150,14 @@ class Redirect implements RedirectInterface
         exit("Unknown http status code " . htmlentities($code)); // @codeCoverageIgnore
     }
 
+    /**
+     * Gets the prefix for the HTTP header
+     * -----------------------------------
+     * Получает префикс для HTTP-заголовка
+     *
+     * @param  string $type
+     * @return string
+     */
     private function getRedirectType(string $type): string
     {
         if (array_key_exists($type, $this->redirectType)) {
