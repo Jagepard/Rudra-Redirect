@@ -1,4 +1,4 @@
-![Static Badge](https://img.shields.io/badge/local%20PHPUnit-passing-green)
+![Static Badge](https://img.shields.io/badge/local%20PHPUnit-passing-brightgreen)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Jagepard/Rudra-Redirect/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Jagepard/Rudra-Redirect/?branch=master)
 [![Code Climate](https://codeclimate.com/github/Jagepard/Rudra-Redirect/badges/gpa.svg)](https://codeclimate.com/github/Jagepard/Rudra-Redirect)
 -----
