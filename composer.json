@@ -39,5 +39,10 @@
     "config"            : {
         "optimize-autoloader" : true,
         "prefer-stable"       : true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }
