@@ -85,6 +85,20 @@ class Redirect implements RedirectInterface
         "secure" => "Location: https://"
     ];
 
+    /**
+     * Executes a redirection with the specified URL, type, and HTTP status code.
+     * The method sets the response code and performs the redirection.
+     * If the environment is not "test", the script execution is terminated.
+     * -------------------------
+     * Выполняет перенаправление с указанным URL, типом и HTTP-кодом состояния.
+     * Метод устанавливает код ответа и выполняет перенаправление.
+     * Если окружение не является "test", выполнение скрипта завершается.
+     *
+     * @param  string $url
+     * @param  string $type
+     * @param  string $code
+     * @return void
+     */
     public function run(string $url = "", string $type = "", string $code = "302"): void
     {
         $this->responseCode($code);
@@ -93,6 +107,16 @@ class Redirect implements RedirectInterface
         ("test" === Rudra::config()->get("environment")) ?: exit; // @codeCoverageIgnore
     }
 
+    /**
+     * Sets the HTTP response code with the specified status code.
+     * The method constructs the header using the server protocol and the provided code.
+     * -------------------------
+     * Устанавливает HTTP-код ответа с указанным кодом состояния.
+     * Метод формирует заголовок, используя протокол сервера и предоставленный код.
+     *
+     * @param  string $code
+     * @return void
+     */
     public function responseCode(string $code): void
     {
         $protocol = Request::server()->has("SERVER_PROTOCOL")
@@ -101,11 +125,32 @@ class Redirect implements RedirectInterface
         header($protocol . ' ' . $code . ' ' . $this->getCodeMessage($code));
     }
 
+    /**
+     * Performs the redirection to the specified URL with the given type.
+     * The method sets the appropriate header for redirection.
+     * -------------------------
+     * Выполняет перенаправление на указанный URL с заданным типом.
+     * Метод устанавливает соответствующий заголовок для перенаправления.
+     *
+     * @param  string $url
+     * @param  string $type
+     * @return void
+     */
     private function redirectTo(string $url, string $type): void
     {
         header($this->getRedirectType($type) . $url);
     }
 
+    /**
+     * Retrieves the message associated with the given HTTP status code.
+     * If the code is not found, the script terminates with an error message.
+     * -------------------------
+     * Извлекает сообщение, связанное с указанным HTTP-кодом состояния.
+     * Если код не найден, выполнение скрипта завершается с сообщением об ошибке.
+     *
+     * @param  string $code
+     * @return string
+     */
     private function getCodeMessage(string $code): string
     {
         if (array_key_exists($code, $this->codeMessage)) {
@@ -115,6 +160,16 @@ class Redirect implements RedirectInterface
         exit("Unknown http status code " . htmlentities($code)); // @codeCoverageIgnore
     }
 
+    /**
+     * Retrieves the redirection type header based on the specified type.
+     * If the type is not found, a default redirection to the base URL is returned.
+     * -------------------------
+     * Извлекает заголовок типа перенаправления на основе указанного типа.
+     * Если тип не найден, возвращается перенаправление по умолчанию на базовый URL.
+     *
+     * @param  string $type
+     * @return string
+     */
     private function getRedirectType(string $type): string
     {
         if (array_key_exists($type, $this->redirectType)) {
