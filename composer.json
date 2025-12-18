@@ -28,8 +28,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Rudra\\Redirect\\": "src/"
-        }
+            "Rudra\\Redirect\\" : "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
