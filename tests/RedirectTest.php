@@ -8,17 +8,17 @@
  * @author  Korotkov Danila (Jagepard) <jagepard@yandex.ru>
  * @license https://mozilla.org/MPL/2.0/  MPL-2.0
  * 
- * phpunit src/tests/ContainerTest --coverage-html src/tests/coverage-html
+ * phpunit src/tests/RedirectTest --coverage-html src/tests/coverage-html
  */
 
 namespace Rudra\Redirect\Tests;
 
-use Rudra\Container\Interfaces\RudraInterface;
-use Rudra\Container\Facades\{Request, Rudra};
+use Rudra\Container\Facades\Rudra;
+use Rudra\Container\Facades\Request;
 use Rudra\Redirect\RedirectFacade as Redirect;
-use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
+use Rudra\Container\Interfaces\RudraInterface;
 
-class RedirectTest extends PHPUnit_Framework_TestCase
+class RedirectTest extends \PHPUnit\Framework\TestCase
 {
     protected function setUp(): void
     {
@@ -37,7 +37,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     public function testRun()
     {
         Redirect::run();
-        $this->assertEquals("Location:" . Rudra::config()->get("url") . '/', xdebug_get_headers()[0]);
+        $this->assertEquals("Location: " . Rudra::config()->get("url") . '/', xdebug_get_headers()[0]);
     }
 
     /**
@@ -55,7 +55,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     public function testRunFull()
     {
         Redirect::run("https://example.com", "full");
-        $this->assertEquals("Location:https://example.com", xdebug_get_headers()[0]);
+        $this->assertEquals("Location: https://example.com", xdebug_get_headers()[0]);
     }
 
     /**
@@ -72,7 +72,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseCode200()
     {
-        Redirect::responseCode("200");
+        Redirect::responseCode(200);
         $this->assertEquals(200, http_response_code());
     }
 
@@ -81,7 +81,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseCode301()
     {
-        Redirect::responseCode("301");
+        Redirect::responseCode(301);
         $this->assertEquals(301, http_response_code());
     }
 
@@ -90,7 +90,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseCode403()
     {
-        Redirect::responseCode("403");
+        Redirect::responseCode(403);
         $this->assertEquals(403, http_response_code());
     }
 
@@ -99,7 +99,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
      */
     public function testResponseCode404()
     {
-        Redirect::responseCode("404");
+        Redirect::responseCode(404);
         $this->assertEquals(404, http_response_code());
     }
 }
