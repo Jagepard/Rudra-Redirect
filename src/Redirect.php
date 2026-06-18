@@ -19,7 +19,7 @@ class Redirect implements RedirectInterface
     public const array CODE_MESSAGES = [
         100 => 'Continue',
         101 => 'Switching Protocols',
-        102 => 'Processing',            // RFC2518
+        102 => 'Processing', // RFC2518
         103 => 'Early Hints',
         200 => 'OK',
         201 => 'Created',
@@ -28,9 +28,9 @@ class Redirect implements RedirectInterface
         204 => 'No Content',
         205 => 'Reset Content',
         206 => 'Partial Content',
-        207 => 'Multi-Status',          // RFC4918
-        208 => 'Already Reported',      // RFC5842
-        226 => 'IM Used',               // RFC3229
+        207 => 'Multi-Status',     // RFC4918
+        208 => 'Already Reported', // RFC5842
+        226 => 'IM Used',          // RFC3229
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
         302 => 'Found',
@@ -38,7 +38,7 @@ class Redirect implements RedirectInterface
         304 => 'Not Modified',
         305 => 'Use Proxy',
         307 => 'Temporary Redirect',
-        308 => 'Permanent Redirect',    // RFC7238
+        308 => 'Permanent Redirect', // RFC7238
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
