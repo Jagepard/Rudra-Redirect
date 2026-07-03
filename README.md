@@ -1,4 +1,4 @@
-## Rudra-Redirect / Перенаправление | [API](https://github.com/Jagepard/Rudra-Redirect/blob/master/docs.md "Documentation API")
+## Rudra-Redirect | [API](https://github.com/Jagepard/Rudra-Redirect/blob/master/docs.md "Documentation API")
 [![PHPUnit](https://github.com/Jagepard/Rudra-Redirect/actions/workflows/php.yml/badge.svg)](https://github.com/Jagepard/Rudra-Redirect/actions/workflows/php.yml)
 [![Maintainability](https://qlty.sh/gh/Jagepard/projects/Rudra-Redirect/maintainability.svg)](https://qlty.sh/gh/Jagepard/projects/Rudra-Redirect)
 [![CodeFactor](https://www.codefactor.io/repository/github/jagepard/rudra-redirect/badge)](https://www.codefactor.io/repository/github/jagepard/rudra-redirect)
