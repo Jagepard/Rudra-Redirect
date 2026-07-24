@@ -14,9 +14,10 @@ namespace Rudra\Redirect;
 use Rudra\Container\Traits\FacadeTrait;
 
 /**
- * @method static void run(string $url = '', string $type = '', int $code = 302)
+ * @method static void run(string $url = '', int $code = 302)
  * @method static void responseCode(int $code)
- *
+ * @method static void back(string $fallback = '', int $code = 302)
+ * 
  * @see Redirect
  */
 final class RedirectFacade

@@ -13,6 +13,7 @@ namespace Rudra\Redirect;
 
 interface RedirectInterface
 {
-    public function run(string $url = '', string $type = '', int $code = 302): void;
+    public function run(string $url = '', int $code = 302): void;
     public function responseCode(int $code): void;
+    public function back(string $fallback = '', int $code = 302): void;
 }
