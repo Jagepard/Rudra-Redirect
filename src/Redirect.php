@@ -81,22 +81,21 @@ class Redirect implements RedirectInterface
         511 => 'Network Authentication Required', // RFC6585
     ];
 
-    private const array REDIRECT_TYPES = [
-        'full'   => 'Location: ',
-        'basic'  => 'Location: http://',
-        'secure' => 'Location: https://',
-    ];
-
     /**
      * Executes a redirection with the specified URL, type, and HTTP status code.
      * The method sets the response code and performs the redirection.
      * If the environment is not "test", the script execution is terminated.
      */
     #[\Override]
-    public function run(string $url = '', string $type = '', int $code = 302): void
+    public function run(string $url = '', int $code = 302): void
     {
         $this->responseCode($code);
-        $this->redirectTo($url, $type);
+
+        if (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
+            $url = rtrim(Rudra::config()->get('url'), '/') . '/' . ltrim($url, '/');
+        }
+
+        header("Location: {$url}", true, $code);
 
         if (Rudra::config()->get('environment') !== 'test') {
             exit; // @codeCoverageIgnore
@@ -118,12 +117,15 @@ class Redirect implements RedirectInterface
     }
 
     /**
-     * Performs the redirection to the specified URL with the given type.
-     * The method sets the appropriate header for redirection.
+     * Redirect to the previous page.
      */
-    private function redirectTo(string $url, string $type): void
+    public function back(string $fallback = '/', int $code = 302): void
     {
-        header($this->getRedirectType($type) . $url);
+        $referer = Request::server()->has('HTTP_REFERER') 
+            ? Request::server()->get('HTTP_REFERER') 
+            : null;
+
+        $this->run($referer ?: $fallback, $code);
     }
 
     /**
@@ -139,18 +141,5 @@ class Redirect implements RedirectInterface
         }
 
         throw new \InvalidArgumentException("Unknown HTTP status code: {$code}");
-    }
-
-    /**
-     * Retrieves the redirection type header based on the specified type.
-     * If the type is not found, a default redirection to the base URL is returned.
-     */
-    private function getRedirectType(string $type): string
-    {
-        if (array_key_exists($type, self::REDIRECT_TYPES)) {
-            return self::REDIRECT_TYPES[$type];
-        }
-
-        return 'Location: ' . Rudra::config()->get('url') . '/';
     }
 }

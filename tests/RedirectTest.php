@@ -26,43 +26,74 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
         ]);
         Rudra::binding([RudraInterface::class => Rudra::run()]);
         Request::get()->set(["r" => "test"]);
-        Request::server()->set(["REQUEST_URI" => "test"]);
+        Request::server()->set([
+            "REQUEST_URI" => "test",
+            "HTTP_REFERER" => "http://example.com/previous"
+        ]);
     }
 
     /**
      * @runInSeparateProcess
      */
-    public function testRun()
+    public function testRunEmpty()
     {
         Redirect::run();
-        $this->assertEquals("Location: " . Rudra::config()->get("url") . '/', xdebug_get_headers()[0]);
+        $this->assertEquals("Location: http://example.com/", xdebug_get_headers()[0]);
     }
 
     /**
      * @runInSeparateProcess
      */
-    public function testRunSecure()
+    public function testRunRelativePath()
     {
-        Redirect::run("example.com", "secure");
-        $this->assertEquals("Location: https://example.com", xdebug_get_headers()[0]);
+        Redirect::run("admin/users");
+        $this->assertEquals("Location: http://example.com/admin/users", xdebug_get_headers()[0]);
     }
 
     /**
      * @runInSeparateProcess
      */
-    public function testRunFull()
+    public function testRunAbsolutePath()
     {
-        Redirect::run("https://example.com", "full");
-        $this->assertEquals("Location: https://example.com", xdebug_get_headers()[0]);
+        Redirect::run("/admin/users");
+        $this->assertEquals("Location: http://example.com/admin/users", xdebug_get_headers()[0]);
     }
 
     /**
      * @runInSeparateProcess
      */
-    public function testRunBasic()
+    public function testRunExternalUrl()
     {
-        Redirect::run("example.com", "basic");
-        $this->assertEquals("Location: http://example.com", xdebug_get_headers()[0]);
+        Redirect::run("https://google.com");
+        $this->assertEquals("Location: https://google.com", xdebug_get_headers()[0]);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testRunWithCustomCode()
+    {
+        Redirect::run("admin/users", 301);
+        $this->assertEquals(301, http_response_code());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testBack()
+    {
+        Redirect::back();
+        $this->assertEquals("Location: http://example.com/previous", xdebug_get_headers()[0]);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testBackWithFallback()
+    {
+        Request::server()->set(["HTTP_REFERER" => ""]);
+        Redirect::back("/fallback");
+        $this->assertEquals("Location: http://example.com/fallback", xdebug_get_headers()[0]);
     }
 
     /**
@@ -81,6 +112,15 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
     {
         Redirect::responseCode(301);
         $this->assertEquals(301, http_response_code());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testResponseCode302()
+    {
+        Redirect::responseCode(302);
+        $this->assertEquals(302, http_response_code());
     }
 
     /**
