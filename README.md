@@ -9,7 +9,7 @@ A lightweight HTTP redirection component for the Rudra Framework.
 ```bash
 composer require rudra/redirect
 ```
-#### Usage
+### Usage
 ##### Basic redirection
 ```php
 use Rudra\Redirect\RedirectFacade as Redirect;
@@ -17,27 +17,36 @@ use Rudra\Redirect\RedirectFacade as Redirect;
 // Simple redirect (302 Found)
 Redirect::run('https://example.com/new-page');
 
-// Permanent redirect (301 Moved Permanently)
-Redirect::run('https://example.com/new-page', '', 301);
+// Permanent redirect (301 Moved Permanently) with a relative path
+Redirect::run('/new-page', 301);
 ```
-#### Redirect types
-##### The component supports three redirect types:
+### URL Handling Logic
+##### The component uses straightforward logic without hidden magic:
+- Absolute URLs: If the provided `$url` starts with `http://` or `https://`, it is used exactly as provided.
+- Relative URLs: If the `$url` does not start with a protocol, the component automatically prepends the base URL from your configuration: `Rudra::config()->get('url') . '/' . $url`.
+### Redirect Back
+Redirects the user to the previous page using the `HTTP_REFERER` header. If the referer is not available, it falls back to the specified path (default is `/`).
 ```php
-// Full URL — sends "Location: " + your URL as-is
-Redirect::run('https://example.com/page', 'full');
+// Redirect back, fallback to homepage if referer is missing (302 Found)
+Redirect::back();
 
-// Basic URL — prepends "http://" automatically
-Redirect::run('example.com/page', 'basic');
-
-// Secure URL — prepends "https://" automatically
-Redirect::run('example.com/page', 'secure');
+// Redirect back with a custom fallback and specific status code
+Redirect::back('/dashboard', 303);
 ```
-If an unknown type is passed, the component falls back to the base URL from the configuration ```Rudra::config()->get('url') . '/'```.
-#### Setting response code only
+### Helper Functions
+##### For even simpler usage, the component provides global helper functions:
+```php
+// Equivalent to Redirect::run()
+redirect('/some-page', 302);
+
+// Equivalent to Redirect::back()
+back('/fallback-page', 302);
+```
+### Setting response code only
 ```php
 Redirect::responseCode(404);
 ```
-#### Supported HTTP status codes
+### Supported HTTP status codes
 The component supports all standard HTTP status codes (1xx–5xx), including:
 - 1xx — Informational (100 Continue, 101 Switching Protocols, 102 Processing, 103 Early Hints)
 - 2xx — Success (200 OK, 201 Created, 204 No Content, etc.)
@@ -45,6 +54,9 @@ The component supports all standard HTTP status codes (1xx–5xx), including:
 - 4xx — Client errors (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 418 I'm a teapot, etc.)
 - 5xx — Server errors (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable, etc.)
 The full list is available in ```Redirect::CODE_MESSAGES```.
+
+Attempting to use an unsupported code will throw an `\InvalidArgumentException`.
+
 ## License
 
 This project is licensed under the **Mozilla Public License 2.0 (MPL-2.0)** — a free, open-source license that:
